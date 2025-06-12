@@ -100,10 +100,10 @@ function GDIFF_cooling()
                     ylabel = L"X_i\ \mathrm{[mol\ fraction]}",legendfontsize=fs-2, guidefontsize=fs,
                     tickfontsize=fs-1, legend_foreground_color =:transparent)
             #suplot 2
-            p2 = plot(tpath/Myr,Tpath.-273,color=:blue,lw=1.5, label =L"Prp",
+            p2 = plot(tpath/Myr,Tpath.-273,color=:blue,lw=1.5, label ="",
                     grid =:on, dpi = 300, xlabel = L"t\ \mathrm{[Myr]}", 
                     title = L"T\ -\ t\ path",
-                    ylabel = L"T\ \mathrm{[^°\ C]}",legendfontsize=fs-2, guidefontsize=fs,
+                    ylabel = L"T\ \mathrm{[^\circ\ C]}",legendfontsize=fs-2, guidefontsize=fs,
                     tickfontsize=fs-1, legend_foreground_color =:transparent)
             p2 = scatter!([t/Myr],[T.-273], color=:red, ms=5, label ="", 
                     xlims=(0,maximum(tpath/Myr)), ylims=(minimum(Tpath.-273), maximum(Tpath.-273)+10))
