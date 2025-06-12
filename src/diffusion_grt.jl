@@ -3,6 +3,33 @@ using LinearAlgebra, SpecialFunctions
 export diffusion_grt
 #------------------------------------------------------------------------------
 
+"""
+    diffusion_grt(C, R, Tinput, Pinput, dtdiff, ndim, NBC, nrest)
+
+    Solves multi-component diffusion in garnet.
+
+# Arguments
+- `C`: Composition.
+- `R`: Radial coordinate array.
+- `Tinput`: Temperature in Kelvin.
+- `Pinput`: Pressure in bar.
+- `dtdiff`: Diffusion time step.
+- `ndim`: Geometry; 1: planar, 2: cylindrical, 3: spherical.
+- `NBC`: Parameter to define boundary conditions.
+
+- `nrest`: Time increments for implicit method.
+
+# Returns
+- Updated composition.
+
+# Notes
+- This function assumes that the input arrays are properly initialized and compatible in size.
+- More information can be found in the documentation at:
+  GDIFF: a Finite Difference code for the calculation of multicomponent diffusion in garnet 
+  doi: 10.5281/zenodo.7805989
+  Evangelos Moulas, 8 Aug 2023, JGU Mainz 
+"""
+
 function diffusion_grt(C,R,Tinput,Pinput,dtdiff,ndim,NBC,nrest)
     #=
     diffusion_grt.jl  is a function to perform multicomponent diffusion in garnet

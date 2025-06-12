@@ -38,6 +38,25 @@ function linear_interpolation_1D(x, y, x_interp)
         end
     end
 end
+"""
+    interp1_linear(x, y, xq, extrapval)
+
+Performs one-dimensional linear interpolation.
+
+# Arguments
+- `x::AbstractVector`: Vector of known x-coordinates (must be sorted in ascending order).
+- `y::AbstractVector`: Vector of known y-values corresponding to `x`.
+- `xq::AbstractVector`: Vector of query points where interpolation is desired.
+- `extrapval`: Value to use for points in `xq` that are outside the range of `x`.
+
+# Returns
+- `yq::Vector`: Interpolated values at the query points `xq`. For points outside the range of `x`, returns `extrapval`.
+
+# Notes
+- Assumes `x` is strictly increasing.
+- If `xq` contains values outside the range of `x`, those values are assigned `extrapval`.
+
+"""
 
 function interp1_linear(x, y, xq, extrapval)
     itp = LinearInterpolation(x, y, extrapolation_bc=Flat())

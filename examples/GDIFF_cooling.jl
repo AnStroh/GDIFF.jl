@@ -8,60 +8,60 @@ using Plots, LaTeXStrings, GDIFF, Interpolations
 #GDIFF: a Finite Difference code for the calculation of multicomponent diffusion in garnet 
 #doi: 10.5281/zenodo.7805989
 #
-#Evangelos Moulas, 8 August 2023, JGU Mainz & Annalena Stroh, 10 June 2025
+#Evangelos Moulas, 8 August 2023, JGU Mainz & Annalena Stroh, 12 June 2025
 #------------------------------------------------------------------------
 function GDIFF_cooling()
     #Pre-allocations---------------------------------------------------------
-    R     = []                                      #Spatial coordinates
-    C0    = []                                   #Initial Concentration matrix
-    C     = []                                   #Concentration matrix
-    r2    = []                                     #Radial distance
-    Dend3 = []                                  #Diffusion coefficient
+    R     = []                                                  #Spatial coordinates
+    C0    = []                                                  #Initial Concentration matrix
+    C     = []                                                  #Concentration matrix
+    r2    = []                                                  #Radial distance
+    Dend3 = []                                                  #Diffusion coefficient
     #------------------------------------------------------------------------
-    plot_sim   = 1                                      #Plot during simulation
-    plot_fin   = 1                                      #Plot at the end of the simulation
+    plot_sim   = 1                                              #Plot during simulation
+    plot_fin   = 1                                              #Plot at the end of the simulation
     #Parameters of the Physical problem--------------------------------------
-    Ti         = 973.0                                 #Temperature in [K]
-    Pi         = 10000.0                                #Pressure in [bar]
-    Myr        = 3600*24*365.25*1e6                     #Seconds in a [Myr]
-    dtdiff     = 0.5*Myr                                #Diffusion duration
-    CR         = 50.0/Myr                               #cooling rate in [K/Myr]
-    Tstop      = 673.0                                  #temperature where model stops in [K]
-    Rstart     = 0.0                                      #Start of coordinates in [microns]
-    Rstop      = 200.0                                    #End of coordinates in [microns]
+    Ti         = 973.0                                          #Temperature in [K]
+    Pi         = 10000.0                                        #Pressure in [bar]
+    Myr        = 3600*24*365.25*1e6                             #Seconds in a [Myr]
+    dtdiff     = 0.5*Myr                                        #Diffusion duration
+    CR         = 50.0/Myr                                       #cooling rate in [K/Myr]
+    Tstop      = 673.0                                          #Temperature where model stops in [K]
+    Rstart     = 0.0                                            #Start of coordinates in [microns]
+    Rstop      = 200.0                                          #End of coordinates in [microns]
     #Numerical --------------------------------------------------------------
-    ndim       = 1                                      #Dimension Number
-    NBC        = 0                                      #Neumann boundary condition (left)
-    nTpath     = 100                                    #Resolution of time.
-    nrest      = 50                                     #Time increments of implicit method
-    nx         = 100                                    #Spatial Discretization
-    nout       = 2                                    #Plot every nout steps (only if plot_sim=1)
+    ndim       = 1                                              #Dimension Number
+    NBC        = 0                                              #Neumann boundary condition (left)
+    nTpath     = 100                                            #Resolution of time.
+    nrest      = 50                                             #Time increments of implicit method
+    nx         = 100                                            #Spatial Discretization
+    nout       = 2                                              #Plot every nout steps (only if plot_sim=1)
     #------------------------------------------------------------------------
-    Tpath      = reverse!([Tstop:(Ti-Tstop)/(nTpath-1):Ti;])  #Temperature path   
+    Tpath      = reverse!([Tstop:(Ti-Tstop)/(nTpath-1):Ti;])    #Temperature path   
     if Tstop != Tpath[end]
         @warn("Tstop is not equal to the last point of Tpath. Adjusting Tstop to the last point of Tpath.")
         Tpath[end] = Tstop 
     end  
-    tMax       = (Ti-Tstop)./CR                         #calculate max time
-    tpath      = [0.0:tMax/(nTpath-1):tMax;]     
+    tMax       = (Ti-Tstop)./CR                                 #Calculate max time
+    tpath      = [0.0:tMax/(nTpath-1):tMax;]                    #Time path
     if tMax != tpath[end]
         @warn("tpath is not equal to the last point of tpath. Adjusting tpath to the last point of tpath.")
         tpath[end] = tMax 
     end 
     #Initial Spatial direction ----------------------------------------------
-    R          = 1e-6*[Rstart:Rstop/(nx-1):Rstop;]     #Total profile
+    R          = 1e-6*[Rstart:Rstop/(nx-1):Rstop;]              #Total profile
     if Rstop != R[end]
         @warn("Rstop is not equal to the last point of R. Adjusting Rstop to the last point of R.")
         R[end] = round(1e-6*Rstop, digits = 6)
     end    
     #Initial Concentration---------------------------------------------------
-    Alm = 0.50*ones(1,nx);  Alm[end] = 0.50;            #Initial profile; Almandine component
-    Prp = 0.30*ones(1,nx);  Prp[end] = 0.20;            #Pyrope component
-    Sps = 0.15*ones(1,nx);  Sps[end] = 0.10;            #Spessartine component
-    Grs = 1.0 .- Alm .- Prp .- Sps                      #Closure relationship; Grosular component
+    Alm = 0.50*ones(1,nx);  Alm[end] = 0.50;                    #Initial profile; Almandine component
+    Prp = 0.30*ones(1,nx);  Prp[end] = 0.20;                    #Pyrope component
+    Sps = 0.15*ones(1,nx);  Sps[end] = 0.10;                    #Spessartine component
+    Grs = 1.0 .- Alm .- Prp .- Sps                              #Closure relationship; Grosular component
     #Closure-----------------------------------------------------------------
-    C   = [Alm;Prp;Sps;Grs]                             #Assemble composition matrix
-    C0  = C                                             #Store initial
+    C   = [Alm;Prp;Sps;Grs]                                     #Assemble composition matrix
+    C0  = C                                                     #Store initial
     #------------------------------------------------------------------------
     if nrest == 1 
         error("Please consider increasing 'nrest' parameter.")
@@ -99,7 +99,6 @@ function GDIFF_cooling()
                     title = L"\mathrm{Cooling:}\ " * "\$$(CR*Myr)\$" * L"{\ \mathrm{K/Myr}\ -\ T_{i}:\ }" * "\$$(Int(round(Ti-273))) \$" * L"^\circ\mathrm{C}",                
                     ylabel = L"X_i\ \mathrm{[mol\ fraction]}",legendfontsize=fs-2, guidefontsize=fs,
                     tickfontsize=fs-1, legend_foreground_color =:transparent)
-                    #xlims=(minimum(R)*1e6, maximum(R)*1e6), ylims=(minimum(C3), maximum(C3)+0.05))
             #suplot 2
             p2 = plot(tpath/Myr,Tpath.-273,color=:blue,lw=1.5, label =L"Prp",
                     grid =:on, dpi = 300, xlabel = L"t\ \mathrm{[Myr]}", 

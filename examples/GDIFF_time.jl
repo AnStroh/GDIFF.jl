@@ -9,7 +9,7 @@ using Plots, LaTeXStrings
 #GDIFF: a Finite Difference code for the calculation of multicomponent diffusion in garnet 
 #doi: 10.5281/zenodo.7805989
 #
-#Evangelos Moulas, 8 August 2023, JGU Mainz & Annalena Stroh, 10 June 2025
+#Evangelos Moulas, 8 August 2023, JGU Mainz & Annalena Stroh, 12 June 2025
 #------------------------------------------------------------------------
 function GDIFF_time()
     plot_fin   = 1                                  #Plot at the end of the simulation
@@ -18,8 +18,8 @@ function GDIFF_time()
     Pi         = 10000.0                            #Pressure in [bar]
     Myr        = 3600*24*365.25*1e6                 #Seconds in a [Myr]
     dtdiff     = 0.5*Myr                            #Diffusion duration
-    Rstart     = 0.0                                  #Start of coordinates in [microns]
-    Rstop      = 200.0                                #End of coordinates in [microns]
+    Rstart     = 0.0                                #Start of coordinates in [microns]
+    Rstop      = 200.0                              #End of coordinates in [microns]
     #Numerical --------------------------------------------------------------
     ndim       = 1                                  #Dimension Number
     NBC        = 0                                  #Neumann boundary condition (left)
@@ -27,7 +27,7 @@ function GDIFF_time()
     nrest      = 50                                 #Time increments of implicit method
     nx         = 100                                #Spatial Discretization
     #Initial Spatial direction ----------------------------------------------
-    R          = 1e-6*[Rstart:Rstop/(nx-1):Rstop;]     #Total profile
+    R          = 1e-6*[Rstart:Rstop/(nx-1):Rstop;]  #Total profile
     if Rstop != R[end]
         @warn("Rstop is not equal to the last point of R. Adjusting Rstop to the last point of R.")
         R[end] = round(1e-6*Rstop, digits = 6)
@@ -36,7 +36,7 @@ function GDIFF_time()
     Alm = 0.50*ones(1,nx);  Alm[end] = 0.50;        #Initial profile; Almandine component
     Prp = 0.30*ones(1,nx);  Prp[end] = 0.20;        #Pyrope component
     Sps = 0.15*ones(1,nx);  Sps[end] = 0.10;        #Spessartine component
-    Grs = 1.0 .- Alm .- Prp .-Sps                             #Closure relationship; Grosular component
+    Grs = 1.0 .- Alm .- Prp .-Sps                   #Closure relationship; Grosular component
     #Closure-----------------------------------------------------------------
     C   = [Alm;Prp;Sps;Grs]                         #Assemble composition matrix
     C0  = C                                         #Store initial
