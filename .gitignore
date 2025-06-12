@@ -1,0 +1,5 @@
+Manifest.toml
+.DS_Store
+*.pdf
+*.png
+settings.json
