@@ -1,4 +1,4 @@
-using LinearAlgebra, SpecialFunctions, Base.Threads
+using LinearAlgebra, SpecialFunctions, Base.Threads, SparseArrays
 
 export diffusion_grt
 #------------------------------------------------------------------------------
@@ -99,6 +99,7 @@ function diffusion_grt(C,R,Tinput,Pinput,dtdiff,ndim,NBC,nrest)
     #Pre-allocations---------------------------------------------------------
     LHS     = zeros(ncomp*nx, ncomp*nx)
     RHS     = zeros(ncomp*nx)
+    LHS     = sparse(LHS)                                  #Sparse matrix for LHS
     Cit_old = zeros(3*nx,1)     
     #Spatial diffusion coefficients ------------------------------------------
     #Initialize Diffusion matrix components
@@ -125,7 +126,7 @@ function diffusion_grt(C,R,Tinput,Pinput,dtdiff,ndim,NBC,nrest)
         Xao .= Xa; Xbo .= Xb; Xco .= Xc; Xdo .= Xd
         Xat .= Xa; Xbt .= Xb; Xct .= Xc; Xdt .= Xd
         @views begin
-            @threads for it_n = 1:nit
+            for it_n = 1:nit
                 Xac .= 0.5*(Xat[1:end-1]+Xat[2:end])
                 Xbc .= 0.5*(Xbt[1:end-1]+Xbt[2:end])
                 Xcc .= 0.5*(Xct[1:end-1]+Xct[2:end])
