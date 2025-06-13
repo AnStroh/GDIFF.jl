@@ -1,5 +1,5 @@
 using GDIFF
-using Plots, LaTeXStrings
+using Plots, LaTeXStrings, BenchmarkTools, ProfileView,Profile
 #-------------------------------------------------------------------------
 #GDIFF_time.jl  is an example of how the main diffusion routine can be
 #used to solve the diffusion in garnet under constant P-T.
@@ -45,6 +45,7 @@ function GDIFF_time()
         error("Please consider increasing 'nrest' parameter.")
     end
     C3,r2,Dend3 = diffusion_grt(C,R,Ti,Pi,dtdiff,ndim,NBC,nrest)
+    @btime diffusion_grt($C, $R, $Ti, $Pi, $dtdiff, $ndim, $NBC, $nrest)
     if plot_fin==1
         fs = 14
         p1 = plot(R*1e6,C3[1,:],color=RGB(0.0, 0.4470, 0.7410),lw=1.5, label =L"Alm")
@@ -64,3 +65,5 @@ function GDIFF_time()
     end
 end
 GDIFF_time()
+#@profile GDIFF_time()
+#ProfileView.view()
